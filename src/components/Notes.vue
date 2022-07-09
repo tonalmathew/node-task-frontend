@@ -1,6 +1,6 @@
 <template>
   <div>
-        <h1>My Notes</h1>
+        <!-- <h1>My Notes</h1> -->
         <div :key="note.id" v-for="note in notes">
             <NoteItem :note="note"></NoteItem>
         </div>

@@ -1,40 +1,44 @@
 <template>
-  <Notes :notes="notes" />
+  <div class="app">
+    <h1>My Note</h1>
+    <AddNote v-on:add-note-event="addNoteMethod"></AddNote>
+    <Notes :notes="notes" />
+  </div>
 </template>
 
 <script>
 import Notes from "./components/Notes.vue";
+import AddNote from "./components/AddNote.vue";
 
 export default {
   name: "App",
   components: {
     Notes,
+    AddNote,
   },
   data() {
     return {
-      notes: [
-        {
-          id: 0,
-          title: "First Title",
-          body: "first body",
-        },
-        {
-          id: 1,
-          title: "Second title",
-          body: "second body",
-        },
-        {
-          id: 2,
-          title: "Third title",
-          body: "third body",
-        },
-        {
-          id: 3,
-          title: "Fourth title",
-          body: "fourth body",
-        },
-      ],
+      notes: [],
     };
+  },
+  mounted() {
+    console.log("App Mounted");
+    if (localStorage.getItem("notes"))
+      this.notes = JSON.parse(localStorage.getItem("notes"));
+  },
+  methods: {
+    addNoteMethod(newNote) {
+      this.notes = [...this.notes, newNote];
+    },
+  },
+  watch: {
+    notes: {
+      handler() {
+        console.log("Notes array changed!");
+        localStorage.setItem("notes", JSON.stringify(this.notes));
+      },
+      deep: true,
+    },
   },
 };
 </script>
