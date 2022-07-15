@@ -81,6 +81,7 @@ export default {
   },
   methods: {
     search() {
+      this.showDetails = false;
       getCompanyDetails.getAll(this.searchString).then((res) => {
         this.company_names = res.data.result;
         // console.table(res.data.result);
@@ -90,7 +91,8 @@ export default {
       this.showDetails = true;
       getCompanyDetails.getAll(cmpny_name).then((res) => {
         this.company_details = res.data.result;
-        console.log(res.data.result);
+        // this.showDetails = false;
+        // console.log(res.data.result);
       });
     },
   },
