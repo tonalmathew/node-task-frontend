@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-lg ">
   <div class="container-fluid ms-4">
-    <h1>Navbar</h1>
+    <h1>Stocks</h1>
   </div>
 </nav>
 </template>

@@ -17,30 +17,81 @@
         type="email"
         class="form-control p-3 ps-5 shadow bg-body rounded"
         placeholder="Search a company"
+        v-model="searchString"
       />
     </div>
-    <h1>hai: {{company_name}}</h1>
+    <!-- <h1>hai: {{ company_name }}</h1> -->
+    <div
+      class="list-group w-50"
+      v-if="company_names != '' && showDetails == false"
+    >
+      <div v-for="company_name in company_names" :key="company_name">
+        <button
+          @click="displayDetails(company_name.company_name)"
+          type="button"
+          class="list-group-item list-group-item-action p-3 shadow bg-body"
+          aria-current="true"
+        >
+          {{ company_name.company_name }}
+        </button>
+      </div>
+    </div>
+    <div class="card w-50 mt-5" v-if="showDetails">
+      <div class="card-body p-4 rounded">
+        <h5 class="card-title">{{ company_details[0].company_name }}</h5>
+        <table class="table p-5">
+          <tr>
+            <td>Market price: <span class="text-red">{{company_details[0].current_market_price}}</span></td>
+            <td>Debt: <span class="text-red">{{company_details[0].debt_to_equity}}</span></td>
+            <td>Yield: <span class="text-red">{{company_details[0].divident_yeald}}</span></td>
+          </tr>
+          <tr>
+            <td>EPS: <span class="text-red">{{company_details[0].eps}}</span></td>
+            <td>Market Cap: <span class="text-red">{{company_details[0].market_cap}}</span></td>
+            <td>Reserves: <span class="text-red">{{company_details[0].reserves}}</span></td>
+          </tr>
+          <tr>
+            <td>ROCE: <span class="text-red">{{company_details[0].roce}}</span></td>
+            <td>ROE Cap: <span class="text-red">{{company_details[0].roe}}</span></td>
+          </tr>
+        </table>
+      </div>
+    </div>
   </div>
 </template>
 <script>
 // import axios from "axios";
-import getCompanyDetails from "../getCompany"
+import { debounce } from "lodash";
+// import axios from "axios";
+import getCompanyDetails from "../getCompany";
 export default {
   name: "Notes",
   data() {
     return {
-      company_name: [],
+      searchString: "",
+      company_names: "",
+      company_details: "",
+      showDetails: false,
     };
   },
-  created() {
-    this.collectData();
+  watch: {
+    searchString: debounce(function () {
+      this.search();
+    }, 1000),
   },
   methods: {
-    collectData() {
-      getCompanyDetails.getAll().then(res => {
-        this.company_name = res.data
-        console.log(res.data)
-      })
+    search() {
+      getCompanyDetails.getAll(this.searchString).then((res) => {
+        this.company_names = res.data.result;
+        // console.table(res.data.result);
+      });
+    },
+    displayDetails(cmpny_name) {
+      this.showDetails = true;
+      getCompanyDetails.getAll(cmpny_name).then((res) => {
+        this.company_details = res.data.result;
+        console.log(res.data.result);
+      });
     },
   },
 };
@@ -48,6 +99,7 @@ export default {
 <style scoped>
 .group {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
 }
@@ -55,12 +107,18 @@ export default {
   display: flex;
   align-items: center;
 }
-/* input{
-box-shadow: 3px 3px 9px rgba(59, 59, 59, 0.74);
-} */
 
 .bi-search {
   position: absolute;
   margin-left: 2%;
+}
+
+td, table, tr{
+  border: none;
+  padding: 4px;
+  margin: 5px;
+}
+.text-red {
+  color: red;
 }
 </style>

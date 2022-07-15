@@ -1,8 +1,8 @@
 import http from "./httpRequest";  
 class getCompanyDetails {  
      
-    getAll() {  
-        return http.get("/api/v1/company");
+    getAll(searchString) {  
+        return http.get(`/api/v1/company/${searchString}`);
       }  
         
 }  
